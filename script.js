@@ -138,9 +138,19 @@ function calculator() {
 
     /**
      * Onde será montada a expressão matemática conforme os dados de entrada, separando valores
-     * de operadores por um underline (_).
+     * e operadores por um underline (_).
      */
     let expression = ""
+
+    function validate() {
+        expression = expression
+                    .replace(/[a-zA-Z]/g, "")
+                    .replace(/^[_][+/*][_]/, "")
+                    .replace(/([_][-+/*][_])[_][-+/*][_]/g, "$1")
+                    .replace(/([_][-+/*][_])[.]/g, "$10.")
+                    .replace(/(\d+[.]\d*)[.]/g, "$1")
+                    .replace(/^[.]/, "0.")
+    }
 
     /**
      * @param {int} i O indice do botão a ser adicionado o evento.
@@ -148,8 +158,9 @@ function calculator() {
      */
     function buttonEventListener(i, exp) {
         button[i].addEventListener("click", () => {
-            screen.innerText += button[i].innerText
             expression += exp
+            validate()
+            screen.innerText = expression.replace(/[_]/g, "")
         })
     }
 
@@ -254,17 +265,12 @@ function calculator() {
          */
         strArray = calcMultiplicationAndDivision(strArray)
         strArray = calcSumAndSubtraction(strArray)
-
-        console.log(strArray)
-        console.log("Old expression: " + expression)
         
         /**
          * Substitui a expressão pelo resultado obtido, e exibe na tela.
          */
         expression = String(strArray[0])
         screen.innerText = strArray[0]
-
-        console.log("New expression: " + expression)
     })
 }
 
