@@ -101,6 +101,7 @@ main {
     height: 3em;
     margin: 20px 0px;
     border-radius: 10px;
+    overflow: hidden;
 
     font-family: "League Spartan";
     font-size: 32px;
