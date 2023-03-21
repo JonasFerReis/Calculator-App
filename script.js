@@ -137,8 +137,14 @@ function calculator() {
     const button = document.querySelectorAll(".botao")
 
     /**
-     * @param {int} i O indice do botão a ser adicionado o evento
-     * @param {string} exp O que será adiciona na expressão
+     * Onde será montada a expressão matemática conforme os dados de entrada, separando valores
+     * de operadores por um underline (_).
+     */
+    let expression = ""
+
+    /**
+     * @param {int} i O indice do botão a ser adicionado o evento.
+     * @param {string} exp O que será adiciona na expressão.
      */
     function buttonEventListener(i, exp) {
         button[i].addEventListener("click", () => {
@@ -146,8 +152,53 @@ function calculator() {
             expression += exp
         })
     }
-    
-    let expression = ""
+
+    /**
+     * @param {string[]} strArray Um vetor de string com a expressão matemática a ser resolvida, dividida em números e operadores.
+     * @returns Retorna o mesmo vetor, porém com as operações de multiplicação e divisão resolvidas.
+     */
+    function calcMultiplicationAndDivision(strArray) {
+        // Itera sobre o vetor procurando operadores de multiplicação ou divisão.
+        for (let i = 0; i <= strArray.length; i++) {
+            if (strArray[i] === "/") {
+                // Após encontrar um operador, realiza o calculo com o valor anterior e posterior a ele.
+                let calc = Number(strArray[i - 1]) / Number(strArray[i + 1])
+                // Substitui os dois valores e o operador utilizado no calculo pelo resultado.
+                strArray.splice(i - 1, 3, calc)
+                // Decrementa o índice para corrigi-lo, pois o tamanho do vetor foi diminuido.
+                i--
+            }
+            
+            if (strArray[i] === "*") {
+                let calc = Number(strArray[i - 1]) * Number(strArray[i + 1])
+                strArray.splice(i - 1, 3, calc)
+                i--
+            }
+        }
+        return strArray
+    }
+
+    /**
+     * @param {string[]} strArray Um vetor de string com a expressão matemática a ser resolvida, dividida em números e operadores.
+     * @returns Retorna o mesmo vetor, porém com as operações de soma e subtração resolvidas.
+     */
+    function calcSumAndSubtraction(strArray) {
+        // Exatamente igual a função "calcMultiplicationAndDivision" porém agora é soma e subtração.
+        for (let i = 0; i <= strArray.length; i++) {
+            if (strArray[i] === "+") {
+                let calc = Number(strArray[i - 1]) + Number(strArray[i + 1])
+                strArray.splice(i - 1, 3, calc)
+                i--
+            }
+            
+            if (strArray[i] === "-") {
+                let calc = Number(strArray[i - 1]) - Number(strArray[i + 1])
+                strArray.splice(i - 1, 3, calc)
+                i--
+            }
+        }
+        return strArray
+    }
 
     // Números
     buttonEventListener(0, "7")
@@ -173,7 +224,14 @@ function calculator() {
         let content = screen.innerText
         content = content.substring(0, content.length - 1)
         screen.innerText = content
-        expression = expression.substring(0, expression.length - 1)
+
+        let tam = expression.length
+        if (expression[tam - 1] === "_") {
+            expression = expression.substring(0, tam - 3)
+        }
+        else {
+            expression = expression.substring(0, tam - 1)
+        }
     })
 
     // RESET
@@ -184,40 +242,29 @@ function calculator() {
 
     // RESULT (=)
     button[17].addEventListener("click", () => {
+        /**
+         * Quebra a expressão montada em um array, usando como referência o underline, que 
+         * separa os valores dos operadores.
+         */
         let strArray = expression.split("_")
-        for (let i = 0; i <= strArray.length; i++) {
-            if (strArray[i] === "/") {
-                let calc = Number(strArray[i - 1]) / Number(strArray[i + 1])
-                strArray.splice(i - 1, 3, calc)
-                i--
-            }
-            
-            if (strArray[i] === "*") {
-                let calc = Number(strArray[i - 1]) * Number(strArray[i + 1])
-                strArray.splice(i - 1, 3, calc)
-                i--
-            }
-        }
 
-        for (let i = 0; i <= strArray.length; i++) {
-            if (strArray[i] === "+") {
-                let calc = Number(strArray[i - 1]) + Number(strArray[i + 1])
-                strArray.splice(i - 1, 3, calc)
-                i--
-            }
-            
-            if (strArray[i] === "-") {
-                let calc = Number(strArray[i - 1]) - Number(strArray[i + 1])
-                strArray.splice(i - 1, 3, calc)
-                i--
-            }
-        }
+        /**
+         * Envia o array para as função de cálculo (Primeiro para a multiplicação e divisão devido a precedência
+         * de operadores).
+         */
+        strArray = calcMultiplicationAndDivision(strArray)
+        strArray = calcSumAndSubtraction(strArray)
 
         console.log(strArray)
-        console.log("Expression: " + expression)
-
-        expression = strArray[0]
+        console.log("Old expression: " + expression)
+        
+        /**
+         * Substitui a expressão pelo resultado obtido, e exibe na tela.
+         */
+        expression = String(strArray[0])
         screen.innerText = strArray[0]
+
+        console.log("New expression: " + expression)
     })
 }
 
