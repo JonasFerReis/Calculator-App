@@ -20,7 +20,7 @@ Os usuários devem ser capazes de:
 
 ### Link
 
-- URL do site ao vivo: (https://jonasferreis.github.io/Calculator-App/)
+- URL do site ao vivo: https://jonasferreis.github.io/Calculator-App/
 
 ## Desenvolvimento
 
@@ -38,4 +38,4 @@ Nessa solução evitei o uso do `eval()` para a realização das operações mat
 
 Jonas Fernandes
 
-- LinkedIn: (https://www.linkedin.com/in/jonas-fernandes-5b4681260/)
+- LinkedIn: https://www.linkedin.com/in/jonas-fernandes-5b4681260/
